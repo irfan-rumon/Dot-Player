@@ -1,10 +1,50 @@
 ﻿
+@model List<Player>
+
 @{
     ViewData["Title"] = "Index";
 }
 
+
+<h3 class="text-center">Player List</h3>
 <div class="container">
-    
+    <div class="row">
+        <div class="col-md-8">
+            <a asp-action="Create" asp-controller="Player" class=" btn btn-primary" role="button">Create New</a>
+        </div>
+
+        <div class="col-md-4">
+            <h6>Search:  <span> <input type="text"/> </span></h6>
+        </div>
+    </div>
+
+                <table class="table table-hover table-striped ms-5 mt-3" style="width:40rem;">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Country</th>
+                            <th>Age</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach(var player in Model){
+                                <tr>
+                                   <td>@player.Name</td>
+                                   <td>@player.Country</td>
+                                   <td>@player.Age</td>
+                                   <td>
+                                         <a asp-controller="Player" asp-action="Edit"  asp-route-id="@player.Id" class=" btn btn-success" role="button">Edit</a>
+                                         <a asp-controller="Player" asp-action="Delete" asp-route-id="@player.Id" class=" btn btn-danger" role="button">Delete</a>
+                                   </td>
+                       
+                                </tr>
+                        }
+                       </tbody>
+                    </table>
+      
+
+
 
 
 </div>

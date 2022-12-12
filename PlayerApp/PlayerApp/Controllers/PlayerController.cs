@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using PlayerApp.Data;
 using PlayerApp.Models;
+using System.Numerics;
 
 namespace PlayerApp.Controllers
 {
@@ -17,13 +18,16 @@ namespace PlayerApp.Controllers
 
         public async Task<IActionResult> Index()
         {
-            return View();
+            var AllPlayers = from player in _db.Players
+                             select player;
+            return View(await AllPlayers.ToListAsync());
         }
 
-        public async Task<IActionResult> Create()
+        public IActionResult Create()
         {
             return View();
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Player player)
@@ -36,5 +40,43 @@ namespace PlayerApp.Controllers
             }
             return RedirectToAction(nameof(Index)); ;
         }
+
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var player = await _db.Players.FindAsync(id);
+            if (player == null)
+            {
+                return NotFound();
+            }
+            return View(player);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(Player player)
+        {
+            if (ModelState.IsValid)
+            {
+                _db.Update(player);
+                await _db.SaveChangesAsync();
+
+            }
+            return RedirectToAction(nameof(Index)); ;
+        }
+
+        public async Task<IActionResult> Delete(int? id)
+        {
+            var player = await _db.Players.FindAsync(id);
+            _db.Remove(player);
+            await _db.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index)); ;
+
+        }
+ 
     }
 }
